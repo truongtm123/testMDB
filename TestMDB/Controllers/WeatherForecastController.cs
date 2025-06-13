@@ -1,6 +1,7 @@
 using MdbToSqliteLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
+using Microsoft.VisualBasic;
 namespace TestMDB.Controllers
 {
     [ApiController]
@@ -13,45 +14,57 @@ namespace TestMDB.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IWebHostEnvironment hostingEnvironment)
         {
             _logger = logger;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
         public List<string> Get()
         {
+            var locaPath = _hostingEnvironment.ContentRootPath + "/" + "Download" + "/" + "MDB_Folder" + "/";
+            var sqlLitePah = locaPath + "Database.sqlite";
+            sqlLitePah = sqlLitePah.Replace("//", "/");
+            sqlLitePah = sqlLitePah.Replace(@"\", "/");
+
+
+
+            string output = locaPath.Replace("\\", "/");
+            if (!Directory.Exists(output))
+            {
+                Directory.CreateDirectory(output);
+            }
+            output = locaPath.Replace("//", "/");
+            output += "Database.mdb";
+            output = output.Replace(@"\", "/");
+
             //string mdbPath = "/home/user/Database.mdb";
             //string sqlitePath = "/home/user/Database.sqlite";
             ////string mdbPath = "E:\\test4\\Database.mdb";
             ////string sqlitePath = "E:\\test4\\Database.sqlite";
-            //MdbConverter.Convert(mdbPath, sqlitePath);
+            MdbConverter.Convert(output, sqlLitePah);
 
-            //var list = new List<string>();
-            //string connectionString = "Data Source= " + sqlitePath;
-            //using (var connection = new SqliteConnection(connectionString))
-            //{
-            //    connection.Open();
-            //    var selectCmd = new SqliteCommand("SELECT * FROM DEFECTDATA  WHERE SFCS_FLAG = FALSE", connection);
-            //    using (var reader = selectCmd.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            //Console.WriteLine($"BoardNumber: {reader["BoardNumber"]}, ComponentName: {reader["ComponentName"]}");
-            //            list.Add(Convert.ToString(reader["DefectCode"]));
-
-            //        }
-            //    }
-
-
-            //    connection.Close();
-            //}
             var list = new List<string>();
-            list.Add("test1");
-            list.Add("test2");
-            list.Add("test266");
-            list.Add("test2666666");
+            string connectionString = "Data Source= " + sqlLitePah;
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Open();
+                var selectCmd = new SqliteCommand("SELECT * FROM DEFECTDATA  WHERE SFCS_FLAG = FALSE", connection);
+                using (var reader = selectCmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        //Console.WriteLine($"BoardNumber: {reader["BoardNumber"]}, ComponentName: {reader["ComponentName"]}");
+                        list.Add(Convert.ToString(reader["DefectCode"]) + " and " + Convert.ToString(reader["ComponentName"]));
+
+                    }
+                }
+
+
+                connection.Close();
+            }
             return list;
         }
     }
