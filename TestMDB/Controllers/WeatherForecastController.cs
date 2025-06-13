@@ -45,8 +45,8 @@ namespace TestMDB.Controllers
             ////string sqlitePath = "E:\\test4\\Database.sqlite";
             ///
 
-            //MdbConverter.RunCommand("apt update");
-            //MdbConverter.RunCommand("apt install -y mdbtools sqlite3");
+            MdbConverter.RunCommand("apt update");
+            MdbConverter.RunCommand("apt install -y mdbtools sqlite3");
             MdbConverter.Convert(output, sqlLitePah);
 
             var list = new List<string>();
