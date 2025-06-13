@@ -51,7 +51,22 @@ namespace TestMDB.Controllers
             using (var connection = new SqliteConnection(connectionString))
             {
                 connection.Open();
-                var selectCmd = new SqliteCommand("SELECT * FROM DEFECTDATA  WHERE SFCS_FLAG = FALSE", connection);
+
+                // Delete
+                string deleteQuery = "DELETE FROM DEFECTDATA WHERE SFCS_FLAG = TRUE;";
+                using (var cmd = new SqliteCommand(deleteQuery, connection))
+                {
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                }
+
+                string U_UpdateSFCSFlagFinish = @"UPDATE DEFECTDATA SET DefectCode='99' where DefectCode='2'";
+                using (var cmd = new SqliteCommand(U_UpdateSFCSFlagFinish, connection))
+                {
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                }
+
+
+                var selectCmd = new SqliteCommand("SELECT * FROM DEFECTDATA  WHERE SFCS_FLAG = FALSE;", connection);
                 using (var reader = selectCmd.ExecuteReader())
                 {
                     while (reader.Read())
