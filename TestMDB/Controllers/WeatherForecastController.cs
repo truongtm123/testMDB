@@ -50,6 +50,7 @@ namespace TestMDB.Controllers
             var list = new List<string>();
             list.Add("test1");
             list.Add("test2");
+            list.Add("test2");
             return list;
         }
     }
