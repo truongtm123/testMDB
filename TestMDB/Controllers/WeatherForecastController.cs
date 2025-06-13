@@ -1,7 +1,6 @@
 using MdbToSqliteLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
-using Microsoft.VisualBasic;
 namespace TestMDB.Controllers
 {
     [ApiController]
@@ -44,6 +43,10 @@ namespace TestMDB.Controllers
             //string sqlitePath = "/home/user/Database.sqlite";
             ////string mdbPath = "E:\\test4\\Database.mdb";
             ////string sqlitePath = "E:\\test4\\Database.sqlite";
+            ///
+
+            MdbConverter.RunCommand("apt update");
+            MdbConverter.RunCommand("apt install -y mdbtools sqlite3");
             MdbConverter.Convert(output, sqlLitePah);
 
             var list = new List<string>();
